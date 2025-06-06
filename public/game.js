@@ -252,9 +252,9 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('gas').addEventListener('click', function() {
     chooseAction('газ');
     speed += 5;
-    if (!intervalId) {
-      intervalId = setInterval(moveCar, 100);
-    }
+    // if (!intervalId) {
+    //   intervalId = setInterval(moveCar, 100);
+    // }
   });
 
   document.getElementById('brake').addEventListener('click', function() {
@@ -262,10 +262,10 @@ document.addEventListener('DOMContentLoaded', function() {
     speed = 0;
   
     // Останавливаем движение машины
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
+    // if (intervalId) {
+    //   clearInterval(intervalId);
+    //   intervalId = null;
+    // }
   });
   
 
