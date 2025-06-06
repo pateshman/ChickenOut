@@ -18,31 +18,31 @@ function startGame() {
 
 function startRound() {
   if (gamePaused) return; // Если игра приостановлена, не начинаем новый раунд
-  timeLeft = 5;
+
+  timeLeft = 5;               // Ставим стартовое значение времени
   playerAAction = null;
 
-  document.getElementById('time').innerText = timeLeft;
+  document.getElementById('time').innerText = timeLeft;  // Показываем 5 сразу
   document.getElementById('result').innerText = '';
   document.getElementById('continueButton').style.display = 'none'; // Скрываем кнопку "Продолжить"
-  
-  // document.getElementById('result').innerText = {round};
 
-  // Очищаем предыдущий таймер, если он существует
-  clearInterval(timer);
-  timer = setInterval(updateTimer, 1000);
+  clearInterval(timer);        // Очищаем старый таймер
+  timer = setInterval(updateTimer, 1000); // Запускаем новый таймер с интервалом 1 секунда
 }
 
 // Функция для обновления таймера
 function updateTimer() {
-    timeLeft--;
-    document.getElementById('time').innerText = timeLeft;
-    console.log('Time', {timeLeft}); // Для отладки
+  document.getElementById('time').innerText = timeLeft; // Сначала показываем текущее значение
+  console.log('Time', {timeLeft}); // Для отладки
 
-    if (timeLeft <= 0) {
-        clearInterval(timer);
-        endRound();
-    }
+  timeLeft--; // Потом уменьшаем
+
+  if (timeLeft < 0) {
+      clearInterval(timer);
+      endRound();
+  }
 }
+
 
 function chooseAction(action) {
     if (playerAAction === null) { // Проверяем, не сделал ли игрок A выбор ранее
@@ -244,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   document.getElementById('brake').addEventListener('click', function() {
     chooseAction('тормоз');
+    speed = 0;
   });
 
   // Обработчики для анимации машины
@@ -251,8 +252,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const playerCar = document.getElementById('playerCar');
     const color = document.getElementById('color').value;
     playerCar.style.backgroundColor = color;
-
-    resetGame();
   });
 
   // document.getElementById('gas').addEventListener('click', function() {
@@ -262,9 +261,6 @@ document.addEventListener('DOMContentLoaded', function() {
   //   }
   // });
 
-  document.getElementById('brake').addEventListener('click', function() {
-    speed = Math.max(0, speed - 5);
-  });
 
   document.getElementById('resetButton').addEventListener('click', function() {
     clearInterval(intervalId);
