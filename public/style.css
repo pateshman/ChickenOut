@@ -93,10 +93,12 @@ body {
 .road::after {
   content: '';
   position: absolute;
-  width: 100%;
-  height: 1px;
+  height: 2px;
   background: white;
+  left: 0;
+  right: 0;
 }
+
 
 .road::before {
   top: 25%;
@@ -116,7 +118,7 @@ body {
 
 .red-car {
   background: red;
-  left: 0;
+  left: 50px;
 }
 
 .blue-car {
@@ -142,4 +144,15 @@ body {
   border-radius: 8px;
   min-height: 40px;
   border: 1px solid #ccc;
+}
+
+#buttonContainer {
+  display: flex;
+  gap: 10px; /* между кнопками */
+  justify-content: center; /* или flex-start, если тебе нужно выравнивание по левому краю */
+  margin-top: 20px;
+}
+
+#buttonContainer button {
+  min-width: 140px; /* одинаковая ширина */
 }

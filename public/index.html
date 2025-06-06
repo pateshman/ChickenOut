@@ -21,8 +21,17 @@
     </div>
 
     <div class="road">
-      <div class="car red-car" id="playerCar" style="left: 0;"></div>
-      <div class="car blue-car" id="botCar" style="right: 0;"></div>
+      <div id="playerCar" class="car red-car">
+        <div class="roof"></div>
+        <div class="headlights front"></div>
+        <div class="headlights rear"></div>
+      </div>
+      
+      <div id="botCar" class="car blue-car">
+        <div class="roof"></div>
+        <div class="headlights front"></div>
+        <div class="headlights rear"></div>
+      </div>
     </div>
 
     <div class="stats">
@@ -30,10 +39,12 @@
       <div class="score">Очки компьютера: <span id="pointsB">0</span></div>
     </div>
 
-    <button id="startGameButton">Начать игру</button>
-    <button onclick="stopGame()">Остановить игру</button>
-    <button id="continueButton" style="display: none;">Продолжить</button>
-    <button id="resetButton">Начать сначала</button>
+    <div id="buttonContainer">
+      <button id="startGameButton">Начать игру</button>
+      <button onclick="stopGame()">Остановить игру</button>
+      <button id="continueButton" style="display: none;">Продолжить</button>
+      <button id="resetButton">Начать сначала</button>
+    </div>    
 
     <div class="history-container" id="history">
       <h3>История раундов</h3>

@@ -57,8 +57,9 @@ function startRound() {
   // Сбросить позиции машинок
   const playerCar = document.getElementById('playerCar');
   const botCar = document.getElementById('botCar');
-  playerCar.style.left = '0px';
+  playerCar.style.left = '50px';
   botCar.style.left = '550px';
+
 
   speed = 5;
   botSpeed = 5; // по умолчанию — едет
@@ -273,8 +274,8 @@ document.addEventListener('DOMContentLoaded', function() {
     clearInterval(intervalId);
     intervalId = null;
     speed = 0;
-    const playerCar = document.getElementById('playerCar');
-    if (playerCar) playerCar.style.left = '0px';
+    // const playerCar = document.getElementById('playerCar');
+    // if (playerCar) playerCar.style.left = '50px';
     resetGame();
   });
 
