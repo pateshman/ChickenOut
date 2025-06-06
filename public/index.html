@@ -1,0 +1,76 @@
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Chicken Out</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <h1>Chicken Out</h1>
+    <p>Раунд: <span id="round">1</span> | Осталось: <span id="time">5</span>/5</p>
+    
+    <!-- <div class="info">
+      <p>Раунд: <span id="round">1</span></p>
+      <p>Очки A: <span id="pointsA">0</span></p>
+      <p>Очки B: <span id="pointsB">0</span></p>
+      
+    </div> -->
+
+    <!-- <div id="timer">Осталось: <span id="time">5</span> сек</div> -->
+    
+    <!-- <div class="container">
+      <div class="car player" id="playerCar"></div>
+      <div class="car computer" id="computerCar"></div>
+    </div> -->
+
+    <div class="actions">
+      <button class="btn green" onclick="chooseAction('газ')" id="gas">Газ</button>
+      <button class="btn red" onclick="chooseAction('тормоз')" id="brake">Тормоз</button>
+    </div>
+
+    <div class="controls">
+      <label for="color">Выберите цвет машинки:</label>
+      <input type="color" id="color" value="#ff0000">
+      <button id="startButton">Начать анимацию</button>
+    </div>
+    
+    <div class="road">
+      <div class="car red-car" id="playerCar"></div>
+      <div class="car blue-car" id="computerCar"></div>
+    </div>
+
+    <div class="stats">
+      <div class="score">Ваши очки: <span id="pointsA">0</span></div>
+      <div class="score">Очки компьютера: <span id="pointsB">0</span></div>
+    </div>
+
+    <!-- <button id="startButton">Начать игру</button>  -->
+    <button onclick="stopGame()">Остановить игру</button>
+    <button id="continueButton" style="display: none;" onclick="continueGame()">Продолжить</button>
+    <button id="resetButton">Начать сначала</button>
+    
+    <!-- <div id="result"></div>
+    <button onclick="saveStats()">Сохранить результат</button> -->
+    
+    <div class="history-container" id="history">
+      <h3>История раундов</h3>
+      <table cellpadding="5" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Раунд</th>
+            <th>Player A</th>
+            <th>Player B</th>
+            <th>Очки A</th>
+            <th>Очки B</th>
+            <th>Комментарий</th>
+          </tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
