@@ -6,6 +6,8 @@ let timeLeft = 5;
 let playerAAction = null;
 let gamePaused = false;
 
+let botSpeed = 0;
+
 let speed = 0;
 let intervalId = null;
 
@@ -49,12 +51,14 @@ function startRound() {
   clearInterval(timer);
   timer = setInterval(updateTimer, 1000);
 
-  // Сбрасываем позицию машинки
+  // Сбросить позиции машинок
   const playerCar = document.getElementById('playerCar');
+  const botCar = document.getElementById('botCar');
   playerCar.style.left = '0px';
+  botCar.style.left = '550px';
 
-  // Устанавливаем стартовую скорость (например 5)
   speed = 5;
+  botSpeed = 5; // по умолчанию — едет
 
   // Если анимация уже запущена, очищаем интервал, чтобы перезапустить с нуля
   if (intervalId) {
@@ -83,6 +87,7 @@ function chooseAction(action) {
     clearInterval(timer);
 
     let playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
+    botSpeed = (playerBAction === 'газ') ? 5 : 0;
     let comment = '';
 
     if (playerAAction === 'газ' && playerBAction === 'газ') {
@@ -121,6 +126,7 @@ function endRound() {
   }
 
   let playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
+  botSpeed = (playerBAction === 'газ') ? 5 : 0;
   let comment = '';
 
   if (playerAAction === 'газ' && playerBAction === 'газ') {
@@ -193,23 +199,33 @@ function continueGame() {
 // Анимация машинки
 function moveCar() {
   const playerCar = document.getElementById('playerCar');
-  if (!playerCar) return;
+  const botCar = document.getElementById('botCar');
 
-  const currentPosition = parseInt(playerCar.style.left) || 0;
-
-  if (speed > 0 && currentPosition + speed <= 550) {
-    playerCar.style.left = (currentPosition + speed) + 'px';
+  // Игрок A (едет слева направо)
+  const currentPos = parseInt(playerCar.style.left) || 0;
+  if (speed > 0 && currentPos + speed <= 550) {
+    playerCar.style.left = (currentPos + speed) + 'px';
   } else {
     playerCar.style.left = '550px';
     speed = 0;
+  }
 
-    // Можно остановить анимацию после достижения конца
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
+  // Игрок B (едет справа налево — просто смещаем его тоже по left, но в обратном направлении)
+  const currentBotPos = parseInt(botCar.style.left) || 0;
+  if (botSpeed > 0 && currentBotPos - botSpeed >= 0) {
+    botCar.style.left = (currentBotPos - botSpeed) + 'px';
+  } else {
+    botCar.style.left = '0px';
+    botSpeed = 0;
+  }
+
+  // Остановка анимации, если обе машины достигли предела
+  if ((speed === 0 && botSpeed === 0) && intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
   }
 }
+
 
 
 document.addEventListener('DOMContentLoaded', function() {
