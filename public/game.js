@@ -27,6 +27,7 @@ function resetGame() {
   round = 1;
   gamePaused = false;
   speed = 0;
+  botSpeed = 0;
 
   updateScores();
   document.getElementById('round').innerText = round;
@@ -100,6 +101,18 @@ function finishDecisionPhase() {
   const playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
   botSpeed = (playerBAction === 'газ') ? 5 : 0;
 
+  if (playerBAction === 'газ') {
+    botSpeed += 5;
+  } else {
+    botSpeed = 0;
+  }
+
+  if (botSpeed > 0 || speed > 0) {
+    if (!intervalId) {
+      intervalId = setInterval(moveCar, 100);
+    }
+  }
+
   let comment = '';
   if (playerAAction === 'газ' && playerBAction === 'газ') {
     comment = 'Столкновение';
@@ -124,7 +137,7 @@ function finishDecisionPhase() {
 
   round++;
   
-  // Ждём 2 секунды, чтобы анимация продолжалась
+  // Ждём 3 секунды, чтобы анимация продолжалась
   setTimeout(() => {
     // Останавливаем анимацию после паузы
     if (intervalId) {
@@ -132,7 +145,7 @@ function finishDecisionPhase() {
       intervalId = null;
     }
     startRound();
-  }, 2000);
+  }, 3000);
 }
 
 // Перепишем chooseAction — теперь просто вызываем finishDecisionPhase
@@ -149,7 +162,6 @@ function endRound() {
   clearInterval(timer);
   finishDecisionPhase();
 }
-
 
 
 function updateScores() {
@@ -197,7 +209,7 @@ function moveCar() {
   const playerCar = document.getElementById('playerCar');
   const botCar = document.getElementById('botCar');
 
-  let playerPos = parseInt(playerCar.style.left) || 0;
+  let playerPos = parseInt(playerCar.style.left) || 50;
   let botPos = parseInt(botCar.style.left) || 550;
 
   const carWidth = 50;
@@ -206,19 +218,20 @@ function moveCar() {
   const distance = botPos - playerPos - carWidth;
 
   if (distance <= 0) {
-    // Столкновение: поставить машины вплотную
-    playerCar.style.left = (botPos - carWidth) + 'px';
+    // Разрешаем машинкам "въехать" друг в друга
+    playerPos += speed;
+    botPos -= botSpeed;
+    playerCar.style.left = playerPos + 'px';
     botCar.style.left = botPos + 'px';
+
+    // Останавливаем движение
     speed = 0;
     botSpeed = 0;
-
-    // Остановка анимации
-    if (intervalId) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
-    return;
+  
+    clearInterval(intervalId);
+    intervalId = null;
   }
+  
 
   // Движение игрока
   if (speed > 0 && playerPos + speed < botPos - carWidth) {
@@ -244,11 +257,26 @@ function moveCar() {
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('startGameButton').addEventListener('click', startGame);
 
-  document.getElementById('applyColorButton').addEventListener('click', function() {
-    const playerCar = document.getElementById('playerCar');
-    const color = document.getElementById('color').value;
-    playerCar.style.backgroundColor = color;
-  });
+  const applyColorPlayerButton = document.getElementById('applyColorPlayerButton');
+  if (applyColorPlayerButton) {
+    applyColorPlayerButton.addEventListener('click', function() {
+      const playerCar = document.getElementById('playerCar');
+      const color = document.getElementById('colorPlayer').value;
+      // Меняем цвет всех прямоугольников машинки игрока
+      [...playerCar.querySelectorAll('rect')].forEach(rect => rect.setAttribute('fill', color));
+    });
+  }
+
+  // Изменение цвета машинки бота
+  const applyColorBotButton = document.getElementById('applyColorBotButton');
+  if (applyColorBotButton) {
+    applyColorBotButton.addEventListener('click', function() {
+      const botCar = document.getElementById('botCar');
+      const color = document.getElementById('colorBot').value;
+      // Меняем цвет всех прямоугольников машинки бота
+      [...botCar.querySelectorAll('rect')].forEach(rect => rect.setAttribute('fill', color));
+    });
+  }
 
   document.getElementById('gas').addEventListener('click', function() {
     chooseAction('газ');
