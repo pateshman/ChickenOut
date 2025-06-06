@@ -37,6 +37,8 @@ function resetGame() {
 // Старт раунда и запуск таймера + анимации
 function startRound() {
   if (gamePaused) return;
+  document.getElementById('gas').disabled = false;
+  document.getElementById('brake').disabled = false;
 
   timeLeft = 5;
   playerAAction = null;
@@ -108,6 +110,8 @@ function chooseAction(action) {
     document.getElementById('round').innerText = round;
 
     setTimeout(startRound, 1000);
+    document.getElementById('gas').disabled = true;
+    document.getElementById('brake').disabled = true;
   }
 }
 
@@ -167,8 +171,16 @@ function stopGame() {
   clearInterval(timer);
   gamePaused = true;
   toggleButtonVisibility(true);
+
+  // Остановить анимацию машинки
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+
   alert('Игра остановлена! Нажмите "Продолжить", чтобы возобновить игру.');
 }
+
 
 function continueGame() {
   if (gamePaused) {
@@ -220,7 +232,14 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('brake').addEventListener('click', function() {
     chooseAction('тормоз');
     speed = 0;
+  
+    // Останавливаем движение машины
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
   });
+  
 
   document.getElementById('resetButton').addEventListener('click', function() {
     clearInterval(intervalId);
