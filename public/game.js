@@ -71,64 +71,32 @@ function startRound() {
 }
 
 
+// В updateTimer убираем вызов endRound напрямую, потому что там очищается таймер
 function updateTimer() {
   document.getElementById('time').innerText = timeLeft;
   timeLeft--;
 
   if (timeLeft < 0) {
     clearInterval(timer);
-    endRound();
+    endRound();  // теперь endRound вызывает finishDecisionPhase
   }
 }
 
-function chooseAction(action) {
+function finishDecisionPhase() {
+  // Блокируем кнопки, чтобы нельзя было менять выбор
+  document.getElementById('gas').disabled = true;
+  document.getElementById('brake').disabled = true;
+
+  // Если игрок не выбрал — автoвыбираем "газ"
   if (playerAAction === null) {
-    playerAAction = action;
-    clearInterval(timer);
-
-    let playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
-    botSpeed = (playerBAction === 'газ') ? 5 : 0;
-    let comment = '';
-
-    if (playerAAction === 'газ' && playerBAction === 'газ') {
-      comment = 'Столкновение';
-      pointsA -= 20;
-      pointsB -= 20;
-    } else if (playerAAction === 'газ' && playerBAction === 'тормоз') {
-      comment = 'Игрок A победил';
-      pointsA += 40;
-      pointsB -= 10;
-    } else if (playerAAction === 'тормоз' && playerBAction === 'газ') {
-      comment = 'Игрок B победил';
-      pointsA -= 10;
-      pointsB += 40;
-    } else {
-      comment = 'Ничья';
-      pointsA += 20;
-      pointsB += 20;
-    }
-
-    updateScores();
-    addToHistory(round, playerAAction, playerBAction, pointsA, pointsB, comment);
-
-    round++;
-    document.getElementById('round').innerText = round;
-
-    setTimeout(startRound, 1000);
-    document.getElementById('gas').disabled = true;
-    document.getElementById('brake').disabled = true;
-  }
-}
-
-function endRound() {
-  if (playerAAction === null) {
-    playerAAction = 'газ'; // Автоматический выбор
+    playerAAction = 'газ';
   }
 
-  let playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
+  // Выбор бота
+  const playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
   botSpeed = (playerBAction === 'газ') ? 5 : 0;
-  let comment = '';
 
+  let comment = '';
   if (playerAAction === 'газ' && playerBAction === 'газ') {
     comment = 'Столкновение';
     pointsA -= 20;
@@ -153,8 +121,33 @@ function endRound() {
   round++;
   document.getElementById('round').innerText = round;
 
-  setTimeout(startRound, 1000);
+  // Ждём 2 секунды, чтобы анимация продолжалась
+  setTimeout(() => {
+    // Останавливаем анимацию после паузы
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    startRound();
+  }, 2000);
 }
+
+// Перепишем chooseAction — теперь просто вызываем finishDecisionPhase
+function chooseAction(action) {
+  if (playerAAction === null) {
+    playerAAction = action;
+    clearInterval(timer);
+    finishDecisionPhase();
+  }
+}
+
+// Перепишем endRound так же — вызываем finishDecisionPhase
+function endRound() {
+  clearInterval(timer);
+  finishDecisionPhase();
+}
+
+
 
 function updateScores() {
   document.getElementById('pointsA').innerText = pointsA;
@@ -201,26 +194,43 @@ function moveCar() {
   const playerCar = document.getElementById('playerCar');
   const botCar = document.getElementById('botCar');
 
-  // Игрок A (едет слева направо)
-  const currentPos = parseInt(playerCar.style.left) || 0;
-  if (speed > 0 && currentPos + speed <= 550) {
-    playerCar.style.left = (currentPos + speed) + 'px';
-  } else {
-    playerCar.style.left = '550px';
+  let playerPos = parseInt(playerCar.style.left) || 0;
+  let botPos = parseInt(botCar.style.left) || 550;
+
+  const carWidth = 50;
+
+  // Проверяем расстояние между машинами
+  const distance = botPos - playerPos - carWidth;
+
+  if (distance <= 0) {
+    // Столкновение: поставить машины вплотную
+    playerCar.style.left = (botPos - carWidth) + 'px';
+    botCar.style.left = botPos + 'px';
     speed = 0;
-  }
-
-  // Игрок B (едет справа налево — просто смещаем его тоже по left, но в обратном направлении)
-  const currentBotPos = parseInt(botCar.style.left) || 0;
-  if (botSpeed > 0 && currentBotPos - botSpeed >= 0) {
-    botCar.style.left = (currentBotPos - botSpeed) + 'px';
-  } else {
-    botCar.style.left = '0px';
     botSpeed = 0;
+
+    // Остановка анимации
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    return;
   }
 
-  // Остановка анимации, если обе машины достигли предела
-  if ((speed === 0 && botSpeed === 0) && intervalId) {
+  // Движение игрока
+  if (speed > 0 && playerPos + speed < botPos - carWidth) {
+    playerPos += speed;
+    playerCar.style.left = playerPos + 'px';
+  }
+
+  // Движение бота
+  if (botSpeed > 0 && botPos - botSpeed > playerPos + carWidth) {
+    botPos -= botSpeed;
+    botCar.style.left = botPos + 'px';
+  }
+
+  // Остановка, если никто больше не едет
+  if (speed === 0 && botSpeed === 0 && intervalId) {
     clearInterval(intervalId);
     intervalId = null;
   }
