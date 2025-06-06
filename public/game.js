@@ -39,6 +39,9 @@ function resetGame() {
 // Старт раунда и запуск таймера + анимации
 function startRound() {
   if (gamePaused) return;
+
+  document.getElementById('round').innerText = round;
+
   document.getElementById('gas').disabled = false;
   document.getElementById('brake').disabled = false;
 
@@ -119,8 +122,7 @@ function finishDecisionPhase() {
   addToHistory(round, playerAAction, playerBAction, pointsA, pointsB, comment);
 
   round++;
-  document.getElementById('round').innerText = round;
-
+  
   // Ждём 2 секунды, чтобы анимация продолжалась
   setTimeout(() => {
     // Останавливаем анимацию после паузы
