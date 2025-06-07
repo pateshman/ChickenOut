@@ -62,8 +62,8 @@ function startRound() {
   botCar.style.left = '550px';
 
 
-  speed = 5;
-  botSpeed = 5; // по умолчанию — едет
+  speed = 4
+  botSpeed = 4; // по умолчанию — едет
 
   // Если анимация уже запущена, очищаем интервал, чтобы перезапустить с нуля
   if (intervalId) {
@@ -298,14 +298,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
 
-  document.getElementById('resetButton').addEventListener('click', function() {
-    clearInterval(intervalId);
-    intervalId = null;
-    speed = 0;
-    // const playerCar = document.getElementById('playerCar');
-    // if (playerCar) playerCar.style.left = '50px';
-    resetGame();
-  });
+  // document.getElementById('resetButton').addEventListener('click', function() {
+  //   clearInterval(intervalId);
+  //   intervalId = null;
+  //   speed = 0;
+  //   // const playerCar = document.getElementById('playerCar');
+  //   // if (playerCar) playerCar.style.left = '50px';
+  //   resetGame();
+  // });
 
   document.getElementById('continueButton').addEventListener('click', continueGame);
 });
