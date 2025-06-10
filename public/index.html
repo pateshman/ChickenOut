@@ -7,7 +7,19 @@
 </head>
 <body>
   <div class="game-container">
-    <h1>Chicken Out</h1>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Игра</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="theory.html">Теория</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Статистика</a>
+      </li>
+    </ul>
+
+    <h1 style="margin-top: 20px;">Chicken Out</h1>
     <p>Раунд: <span id="round">1</span> | Осталось: <span id="time">5</span>/5</p>
 
     <div class="actions">
@@ -62,22 +74,26 @@
 
     <div class="payoff-matrix" id="payoffMatrix" style="display: none;">
       <h3>Матрица выигрышей</h3>
-      <table cellpadding="5" cellspacing="0">
-        <tr>
-          <th></th>
-          <th>Прямо</th>
-          <th>Свернуть</th>
-        </tr>
-        <tr>
-          <th>Прямо</th>
-          <td>-20;-20</td>
-          <td>40;-10</td>
-        </tr>
-        <tr>
-          <th>Свернуть</th>
-          <td>-10;40</td>
-          <td>20;20</td>
-        </tr>
+      <table class="table table-bordered text-center">
+        <thead class="table-light">
+          <tr>
+            <th></th>
+            <th>Прямо</th>
+            <th>Свернуть</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Прямо</th>
+            <td><strong>-20 ; -20</strong><br><small>оба проигрывают</small></td>
+            <td><strong>40 ; -10</strong><br><small>первый выигрывает</small></td>
+          </tr>
+          <tr>
+            <th scope="row">Свернуть</th>
+            <td><strong>-10 ; 40</strong><br><small>второй выигрывает</small></td>
+            <td><strong>20 ; 20</strong><br><small>оба в безопасности</small></td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
