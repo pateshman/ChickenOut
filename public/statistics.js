@@ -7,12 +7,17 @@ async function fetchGameData() {
       data.reverse();
   
       const roundsLabels = data.map((item, i) => `Раунд ${i + 1}`);
-      const pointsA = data.map(item => item.result === 'A' ? item.trust : 0);
-      const pointsB = data.map(item => item.result === 'B' ? item.trust : 0);
+      const pointsA = data.map(item => item.pointsA || 0);
+      const pointsB = data.map(item => item.pointsB || 0);
   
+      console.log(data.map(item => item.result));
+
       const wins = data.filter(item => item.result === 'A').length;
       const losses = data.filter(item => item.result === 'B').length;
       const draws = data.filter(item => item.result === 'draw').length;
+      
+      console.log('Wins:', wins, 'Losses:', losses, 'Draws:', draws);
+      
   
       new Chart(document.getElementById('pointsChart').getContext('2d'), {
         type: 'bar',
