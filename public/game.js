@@ -132,6 +132,29 @@ function finishDecisionPhase() {
     pointsB += 20;
   }
 
+  // Отправляем результат раунда на сервер
+  fetch('http://localhost:3000/api/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      playerA: 'PlayerA',
+      playerB: 'Bot',
+      trust: pointsA,
+      pointsA: pointsA,
+      pointsB: pointsB,
+      result: comment
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      console.error('Ошибка при сохранении результата:', data.error);
+    }
+  })
+  .catch(err => {
+    console.error('Ошибка сети при сохранении результата:', err);
+  });
+
   updateScores();
   addToHistory(round, playerAAction, playerBAction, pointsA, pointsB, comment);
 

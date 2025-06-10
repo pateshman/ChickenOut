@@ -20,23 +20,27 @@ db.run(`
     playerA TEXT,
     playerB TEXT,
     trust INTEGER,
+    pointsA INTEGER,
+    pointsB INTEGER,
     result TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `);
 
+
 // Сохранение результата игры
 app.post('/api/save', (req, res) => {
-  const { playerA, playerB, trust, result } = req.body;
+  const { playerA, playerB, trust, pointsA, pointsB, result } = req.body;
   db.run(
-    `INSERT INTO rounds (playerA, playerB, trust, result) VALUES (?, ?, ?, ?)`,
-    [playerA, playerB, trust, result],
+    `INSERT INTO rounds (playerA, playerB, trust, pointsA, pointsB, result) VALUES (?, ?, ?, ?, ?, ?)`,
+    [playerA, playerB, trust, pointsA, pointsB, result],
     function (err) {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ success: true });
     }
   );
 });
+
 
 // Получение всех игр
 app.get('/api/stats', (req, res) => {
