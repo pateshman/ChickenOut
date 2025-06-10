@@ -114,42 +114,51 @@ function finishDecisionPhase() {
   }
 
   let comment = '';
+  let aKey, bKey;
+
   if (playerAAction === 'газ' && playerBAction === 'газ') {
     comment = 'Столкновение';
-    pointsA -= 20;
-    pointsB -= 20;
+    aKey = 'ggA';
+    bKey = 'ggB';
   } else if (playerAAction === 'газ' && playerBAction === 'тормоз') {
     comment = 'Игрок A победил';
-    pointsA += 40;
-    pointsB -= 10;
+    aKey = 'gbA';
+    bKey = 'gbB';
   } else if (playerAAction === 'тормоз' && playerBAction === 'газ') {
     comment = 'Игрок B победил';
-    pointsA -= 10;
-    pointsB += 40;
+    aKey = 'bgA';
+    bKey = 'bgB';
   } else {
     comment = 'Ничья';
-    pointsA += 20;
-    pointsB += 20;
+    aKey = 'bbA';
+    bKey = 'bbB';
   }
+
+  const valA = parseInt(document.getElementById(aKey).value, 10);
+  const valB = parseInt(document.getElementById(bKey).value, 10);
+
+  pointsA += valA;
+  pointsB += valB;
+
 
   // Отправляем результат раунда на сервер
   fetch('http://localhost:3000/api/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      playerA: 'PlayerA',
-      playerB: 'Bot',
-      trust: pointsA,
-      pointsA: pointsA,
-      pointsB: pointsB,
-      result: comment
+    playerA: 'PlayerA',
+    playerB: 'Bot',
+    trust: pointsA,
+    pointsA: pointsA,
+    pointsB: pointsB,
+    result: comment
     })
   })
   .then(res => res.json())
   .then(data => {
-    if (!data.success) {
-      console.error('Ошибка при сохранении результата:', data.error);
-    }
+  if (!data.success) {
+    console.error('Ошибка при сохранении результата:', data.error);
+  }
   })
   .catch(err => {
     console.error('Ошибка сети при сохранении результата:', err);
@@ -159,12 +168,12 @@ function finishDecisionPhase() {
   addToHistory(round, playerAAction, playerBAction, pointsA, pointsB, comment);
 
   round++;
-  
+    
   // Ждём 3 секунды, чтобы анимация продолжалась
   setTimeout(() => {
-    // Останавливаем анимацию после паузы
-    if (intervalId) {
-      clearInterval(intervalId);
+  // Останавливаем анимацию после паузы
+  if (intervalId) {
+    clearInterval(intervalId);
       intervalId = null;
     }
     startRound();
@@ -275,7 +284,25 @@ function moveCar() {
   }
 }
 
+function fillPayoffMatrix() {
+  const options = [];
+  for (let i = -50; i <= 50; i += 10) {
+    options.push(`<option value="${i}">${i}</option>`);
+  }
 
+  const defaultValues = {
+    ggA: -20, ggB: -20,
+    gbA: 40, gbB: -10,
+    bgA: -10, bgB: 40,
+    bbA: 20, bbB: 20
+  };
+
+  for (const id in defaultValues) {
+    const select = document.getElementById(id);
+    select.innerHTML = options.join('');
+    select.value = defaultValues[id];
+  }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('startGameButton').addEventListener('click', startGame);
@@ -344,4 +371,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
   document.getElementById('continueButton').addEventListener('click', continueGame);
+
+  fillPayoffMatrix();
 });

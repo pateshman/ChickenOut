@@ -151,8 +151,7 @@ body {
   cursor: pointer;
 }
 
-
-.payoff-matrix {
+/* .payoff-matrix {
   margin: 15px 0;
   padding: 10px;
   border-radius: 5px;
@@ -171,6 +170,27 @@ body {
 
 .payoff-matrix th {
   background-color: #f2f2f2;
+} */
+
+#payoffMatrix table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+#payoffMatrix th,
+#payoffMatrix td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+#payoffMatrix select {
+  margin: 2px;
+}
+
+#payoffMatrix h3 {
+  margin-bottom: 10px;
 }
 
 .nav-tabs .nav-link {

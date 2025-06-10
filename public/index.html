@@ -22,23 +22,39 @@
     <h1 style="margin-top: 20px;">Chicken Out</h1>
     <p>Раунд: <span id="round">1</span> | Осталось: <span id="time">5</span>/5</p>
 
+    <button id="showMatrixButton" type="button" class="btn btn-secondary">Показать матрицу выигрышей</button>
+
+    <div id="payoffMatrix" style="display: none; text-align: center; margin-top: 20px;">
+      <h3>Матрица выигрышей</h3>
+      <table style="margin: 0 auto; border-collapse: collapse; border: 2px solid #444;">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Компьютер: Газ</th>
+            <th>Компьютер: Тормоз</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Игрок: Газ</th>
+            <td><select id="ggA"></select> / <select id="ggB"></select></td>
+            <td><select id="gbA"></select> / <select id="gbB"></select></td>
+          </tr>
+          <tr>
+            <th>Игрок: Тормоз</th>
+            <td><select id="bgA"></select> / <select id="bgB"></select></td>
+            <td><select id="bbA"></select> / <select id="bbB"></select></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    
+
     <div class="actions">
       <button class="btn green" id="gas">Газ</button>
       <button class="btn red" id="brake">Тормоз</button>
     </div>
-
-    <div class="controls">
-      <label for="colorPlayer">Цвет вашей машинки:</label>
-      <input type="color" id="colorPlayer" value="#ff0000" />
-      <button id="applyColorPlayerButton" type="button" class="btn btn-secondary">Применить цвет</button>
-    </div>
-    
-    <div class="controls">
-      <label for="colorBot">Цвет машинки компьютера:</label>
-      <input type="color" id="colorBot" value="#0000ff" />
-      <button id="applyColorBotButton" type="button" class="btn btn-secondary">Применить цвет</button>
-    </div>
-  
 
     <div class="road">
       <svg id="playerCar" class="car" viewBox="0 0 120 60" width="100" height="50">
@@ -63,14 +79,24 @@
       <div class="score">Очки компьютера: <span id="pointsB">0</span></div>
     </div>
 
+    <div class="controls">
+      <label for="colorPlayer">Цвет вашей машинки:</label>
+      <input type="color" id="colorPlayer" value="#ff0000" />
+      <button id="applyColorPlayerButton" type="button" class="btn btn-secondary">Применить цвет</button>
+    </div>
+    
+    <div class="controls">
+      <label for="colorBot">Цвет машинки компьютера:</label>
+      <input type="color" id="colorBot" value="#0000ff" />
+      <button id="applyColorBotButton" type="button" class="btn btn-secondary">Применить цвет</button>
+    </div>
+
     <div id="buttonContainer">
       <button id="startGameButton" type="button" class="btn btn-secondary">Начать игру</button>
       <button onclick="stopGame()" type="button" class="btn btn-secondary">Остановить игру</button>
       <button id="continueButton" style="display: none;" type="button" class="btn btn-secondary">Продолжить</button>
       <!-- <button id="resetButton">Начать сначала</button> -->
     </div>    
-
-    <button id="showMatrixButton" type="button" class="btn btn-secondary">Показать матрицу выигрышей</button>
 
     <div class="payoff-matrix" id="payoffMatrix" style="display: none;">
       <h3>Матрица выигрышей</h3>
