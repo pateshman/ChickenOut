@@ -1,94 +1,98 @@
-async function fetchGameData() {
+async function fetchAndRenderStats() {
     try {
       const response = await fetch('/api/stats');
-      if (!response.ok) throw new Error('Ошибка загрузки данных');
-      const data = await response.json();
+      const stats = await response.json();
   
-      data.reverse();
+      console.log('Статистика с сервера:', stats);
   
-      const roundsLabels = data.map((item, i) => `Раунд ${i + 1}`);
-      const pointsA = data.map(item => item.pointsA || 0);
-      const pointsB = data.map(item => item.pointsB || 0);
+      // === Круговая диаграмма стратегий ===
+      const strategyLabels = ['A: Прямо', 'A: Свернуть', 'B: Прямо', 'B: Свернуть'];
+      const strategyData = [
+        stats.strategyCounts.A_straight,
+        stats.strategyCounts.A_turn,
+        stats.strategyCounts.B_straight,
+        stats.strategyCounts.B_turn
+      ];
   
-      console.log(data.map(item => item.result));
-
-      const wins = data.filter(item => item.result === 'A').length;
-      const losses = data.filter(item => item.result === 'B').length;
-      const draws = data.filter(item => item.result === 'draw').length;
-      
-      console.log('Wins:', wins, 'Losses:', losses, 'Draws:', draws);
-      
-  
-      new Chart(document.getElementById('pointsChart').getContext('2d'), {
-        type: 'bar',
-        data: {
-          labels: roundsLabels,
-          datasets: [
-            {
-              label: 'Очки Player A',
-              data: pointsA,
-              backgroundColor: 'rgba(255, 99, 132, 0.7)'
-            },
-            {
-              label: 'Очки Player B',
-              data: pointsB,
-              backgroundColor: 'rgba(54, 162, 235, 0.7)'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          scales: { y: { beginAtZero: true } }
-        }
-      });
-  
-      new Chart(document.getElementById('winLossChart').getContext('2d'), {
+      new Chart(document.getElementById('strategyChart'), {
         type: 'pie',
         data: {
-          labels: ['Выигрыши A', 'Выигрыши B', 'Ничьи'],
+          labels: strategyLabels,
           datasets: [{
-            data: [wins, losses, draws],
+            data: strategyData,
             backgroundColor: [
               'rgba(255, 99, 132, 0.7)',
+              'rgba(255, 159, 64, 0.7)',
               'rgba(54, 162, 235, 0.7)',
-              'rgba(201, 203, 207, 0.7)'
+              'rgba(153, 102, 255, 0.7)'
             ]
           }]
-        }
-      });
-  
-      new Chart(document.getElementById('scoreOverRoundsChart').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: roundsLabels,
-          datasets: [
-            {
-              label: 'Player A',
-              data: pointsA,
-              fill: false,
-              borderColor: 'rgba(255, 99, 132, 1)',
-              tension: 0.1
-            },
-            {
-              label: 'Player B',
-              data: pointsB,
-              fill: false,
-              borderColor: 'rgba(54, 162, 235, 1)',
-              tension: 0.1
-            }
-          ]
         },
         options: {
           responsive: true,
-          scales: { y: { beginAtZero: true } }
+          plugins: {
+            title: { display: true, text: 'Частота выбора стратегий' }
+          }
+        }
+      });
+  
+      // === Столбчатая диаграмма исходов ===
+      const outcomeLabels = ['Катастрофа', 'Победа A', 'Победа B', 'Обе уступили'];
+      const outcomeData = [
+        stats.outcomes.catastrophe,
+        stats.outcomes.A_win,
+        stats.outcomes.B_win,
+        stats.outcomes.both_turn
+      ];
+  
+      new Chart(document.getElementById('outcomeChart'), {
+        type: 'bar',
+        data: {
+          labels: outcomeLabels,
+          datasets: [{
+            label: 'Количество',
+            data: outcomeData,
+            backgroundColor: 'rgba(75, 192, 192, 0.7)'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          },
+          plugins: {
+            title: { display: true, text: 'Распределение исходов игр' }
+          }
+        }
+      });
+  
+      // === Диаграмма средних очков ===
+      new Chart(document.getElementById('averagePointsChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Player A', 'Player B'],
+          datasets: [{
+            label: 'Средний выигрыш',
+            data: [stats.avgPointsA.toFixed(2), stats.avgPointsB.toFixed(2)],
+            backgroundColor: ['rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)']
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          },
+          plugins: {
+            title: { display: true, text: 'Средний выигрыш игроков' }
+          }
         }
       });
   
     } catch (error) {
-      console.error('Ошибка при загрузке статистики:', error);
-      alert('Не удалось загрузить статистику.');
+      console.error('Ошибка загрузки статистики:', error);
+      alert('Не удалось загрузить статистику');
     }
   }
   
-  window.onload = fetchGameData;
+  window.onload = fetchAndRenderStats;
   

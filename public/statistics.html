@@ -7,31 +7,30 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a class="nav-link" href="index.html">Игра</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="theory.html">Теория</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="statistics.html">Статистика</a>
-        </li>
-      </ul>
+    <div class="game-container">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+            <a class="nav-link" href="index.html">Игра</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="theory.html">Теория</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="statistics.html">Статистика</a>
+            </li>
+        </ul>
 
-    <h1 style="margin-top: 20px;">Статистика игр «Chicken Out»</h1>
+        <h1 style="margin-top: 20px;">Статистика игр «Chicken Out»</h1>
 
-    <h3>Очки игроков по раундам</h3>
-    <canvas id="pointsChart" width="600" height="300"></canvas>
+        <h3>Частота выбора стратегий</h3>
+        <canvas id="strategyChart" width="400" height="400"></canvas>
 
-    <h3>Соотношение выигрышей и ничьих</h3>
-    <canvas id="winLossChart" width="300" height="300"></canvas>
+        <h3>Распределение исходов</h3>
+        <canvas id="outcomeChart" width="400" height="300"></canvas>
 
-    <h3>Динамика очков по раундам</h3>
-    <canvas id="scoreOverRoundsChart" width="600" height="300"></canvas>
-  </div>
-
+        <h3>Средний выигрыш игроков</h3>
+        <canvas id="averagePointsChart" width="400" height="300"></canvas>
+    </div>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="statistics.js" defer></script>
 </body>
