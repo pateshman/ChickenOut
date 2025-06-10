@@ -307,5 +307,18 @@ document.addEventListener('DOMContentLoaded', function() {
   //   resetGame();
   // });
 
+  const showMatrixButton = document.getElementById('showMatrixButton');
+      const payoffMatrix = document.getElementById('payoffMatrix');
+      
+      showMatrixButton.addEventListener('click', function() {
+        if (payoffMatrix.style.display === 'none') {
+          payoffMatrix.style.display = 'block';
+          showMatrixButton.textContent = 'Скрыть матрицу выигрышей';
+        } else {
+          payoffMatrix.style.display = 'none';
+          showMatrixButton.textContent = 'Показать матрицу выигрышей';
+        }
+      });
+
   document.getElementById('continueButton').addEventListener('click', continueGame);
 });

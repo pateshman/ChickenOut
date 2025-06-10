@@ -156,3 +156,56 @@ body {
 #buttonContainer button {
   min-width: 140px; /* одинаковая ширина */
 }
+
+#applyColorPlayerButton, #applyColorBotButton {
+  padding: 4px 10px;
+  font-size: 14px;
+}
+
+.btn-secondary {
+  background-color: #d6d8db;
+  border-color: #c6c8ca;
+  color: #000;
+  padding: 4px 10px;    /* меньше отступы по вертикали и горизонтали */
+  font-size: 14px;      /* меньше шрифт */
+  line-height: 1.2;
+  border-radius: 4px;
+}
+
+.btn-secondary:hover {
+  background-color: #c8cbcf;
+  border-color: #babdc0;
+  color: #000;
+}
+
+#showMatrixButton {
+  font-size: 16px; 
+  margin: 10px 0;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+.payoff-matrix {
+  margin: 15px 0;
+  padding: 10px;
+  /* background-color: #f9f9f9; */
+  border-radius: 5px;
+}
+
+.payoff-matrix table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payoff-matrix th, .payoff-matrix td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.payoff-matrix th {
+  background-color: #f2f2f2;
+}

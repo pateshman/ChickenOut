@@ -2,6 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Chicken Out</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,15 +18,15 @@
     <div class="controls">
       <label for="colorPlayer">Цвет вашей машинки:</label>
       <input type="color" id="colorPlayer" value="#ff0000" />
-      <button id="applyColorPlayerButton">Применить цвет</button>
+      <button id="applyColorPlayerButton" type="button" class="btn btn-secondary">Применить цвет</button>
     </div>
     
     <div class="controls">
       <label for="colorBot">Цвет машинки компьютера:</label>
       <input type="color" id="colorBot" value="#0000ff" />
-      <button id="applyColorBotButton">Применить цвет</button>
+      <button id="applyColorBotButton" type="button" class="btn btn-secondary">Применить цвет</button>
     </div>
-    
+  
 
     <div class="road">
       <svg id="playerCar" class="car" viewBox="0 0 120 60" width="100" height="50">
@@ -51,11 +52,34 @@
     </div>
 
     <div id="buttonContainer">
-      <button id="startGameButton">Начать игру</button>
-      <button onclick="stopGame()">Остановить игру</button>
-      <button id="continueButton" style="display: none;">Продолжить</button>
+      <button id="startGameButton" type="button" class="btn btn-secondary">Начать игру</button>
+      <button onclick="stopGame()" type="button" class="btn btn-secondary">Остановить игру</button>
+      <button id="continueButton" style="display: none;" type="button" class="btn btn-secondary">Продолжить</button>
       <!-- <button id="resetButton">Начать сначала</button> -->
     </div>    
+
+    <button id="showMatrixButton" type="button" class="btn btn-secondary">Показать матрицу выигрышей</button>
+
+    <div class="payoff-matrix" id="payoffMatrix" style="display: none;">
+      <h3>Матрица выигрышей</h3>
+      <table cellpadding="5" cellspacing="0">
+        <tr>
+          <th></th>
+          <th>Прямо</th>
+          <th>Свернуть</th>
+        </tr>
+        <tr>
+          <th>Прямо</th>
+          <td>-20;-20</td>
+          <td>40;-10</td>
+        </tr>
+        <tr>
+          <th>Свернуть</th>
+          <td>-10;40</td>
+          <td>20;20</td>
+        </tr>
+      </table>
+    </div>
 
     <div class="history-container" id="history">
       <h3>История раундов</h3>
@@ -75,6 +99,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="game.js" defer></script>
 </body>
 </html>
