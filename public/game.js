@@ -6,7 +6,7 @@ let timeLeft = 5;
 let playerAAction = null;
 let gamePaused = false;
 let B_belief = Math.floor(Math.random() * 41) + 30; // доверие от 30 до 70 в начале
-let botPersonality = 'riskSeeking'; // по умолчанию рискофоб
+let botPersonality = 'riskSeeking'; // по умолчанию рискофил
 let recentCrashes = 0;  // память о недавних авариях (на 5 последних раундов)
 const crashMemoryLength = 5;
 let actionHistory = []; // хранит последние ходы A
@@ -101,15 +101,13 @@ function startRound() {
   intervalId = setInterval(moveCar, 100);
 }
 
-
-// В updateTimer убираем вызов endRound напрямую, потому что там очищается таймер
 function updateTimer() {
   document.getElementById('time').innerText = timeLeft;
   timeLeft--;
 
   if (timeLeft < 0) {
     clearInterval(timer);
-    endRound();  // теперь endRound вызывает finishDecisionPhase
+    endRound();
   }
 }
 
@@ -128,11 +126,11 @@ function finishDecisionPhase() {
   const playerBAction = calculateBotAction();
   botSpeed = (playerBAction === 'газ') ? 5 : 0;
 
-  // if (playerBAction === 'газ') {
-  //   botSpeed += 5;
-  // } else {
-  //   botSpeed = 0;
-  // }
+  if (playerBAction === 'газ') {
+    botSpeed += 5;
+  } else {
+    botSpeed = 0;
+  }
 
   if (botSpeed > 0 || speed > 0) {
     if (!intervalId) {
@@ -413,10 +411,10 @@ function calculateBotAction() {
   let playerAggressivenessShift = 0
   if (botPersonality === 'riskAverse') {
     // Чем чаще игрок газует, тем более осторожным будет бот
-    playerAggressivenessShift = -0.1 * gasFrequency;
+    playerAggressivenessShift = -0.2 * gasFrequency;
   } else if (botPersonality === 'riskSeeking') {
     // Чем чаще игрок газует, тем более злее будет бот
-    playerAggressivenessShift = 0.3 * gasFrequency;
+    playerAggressivenessShift = 1.2 * gasFrequency;
   }
 
   // Итоговая сумма факторов
