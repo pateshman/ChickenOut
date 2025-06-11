@@ -5,10 +5,12 @@ let timer;
 let timeLeft = 5;
 let playerAAction = null;
 let gamePaused = false;
+let B_belief = Math.floor(Math.random() * 41) + 30; // доверие от 30 до 70 в начале
+
 
 let botSpeed = 0;
-
 let speed = 0;
+
 let intervalId = null;
 
 // Запуск игры
@@ -28,6 +30,8 @@ function resetGame() {
   gamePaused = false;
   speed = 0;
   botSpeed = 0;
+
+  B_belief = Math.floor(Math.random() * 41) + 30; // новое значение доверия 30–70
 
   updateScores();
   document.getElementById('round').innerText = round;
@@ -98,7 +102,8 @@ function finishDecisionPhase() {
   }
 
   // Выбор бота
-  const playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
+  // const playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
+  const playerBAction = calculateBotAction();
   botSpeed = (playerBAction === 'газ') ? 5 : 0;
 
   if (playerBAction === 'газ') {
@@ -140,6 +145,22 @@ function finishDecisionPhase() {
   pointsA += valA;
   pointsB += valB;
 
+  // Корректировка доверия после каждого раунда
+  if (playerAAction === 'тормоз' && playerBAction === 'тормоз') {
+    B_belief += 3;
+  }
+  if (playerAAction === 'тормоз' && playerBAction === 'газ') {
+    B_belief += 5;
+  }
+  if (playerAAction === 'газ' && playerBAction === 'тормоз') {
+    B_belief -= 5;
+  }
+  if (playerAAction === 'газ' && playerBAction === 'газ') {
+    B_belief -= 15;
+  }
+
+  // Ограничиваем доверие в пределах 0–100
+  B_belief = Math.max(0, Math.min(100, B_belief));
 
   // Отправляем результат раунда на сервер
   fetch('http://localhost:3000/api/save', {
@@ -284,6 +305,35 @@ function moveCar() {
   }
 }
 
+function calculateBotAction() {
+  // Получаем значения из матрицы выигрыша
+  const matrix = {
+    ggA: parseInt(document.getElementById('ggA').value, 10),
+    ggB: parseInt(document.getElementById('ggB').value, 10),
+    gbA: parseInt(document.getElementById('gbA').value, 10),
+    gbB: parseInt(document.getElementById('gbB').value, 10),
+    bgA: parseInt(document.getElementById('bgA').value, 10),
+    bgB: parseInt(document.getElementById('bgB').value, 10),
+    bbA: parseInt(document.getElementById('bbA').value, 10),
+    bbB: parseInt(document.getElementById('bbB').value, 10),
+  };
+
+  // Анализ рисков
+  const collisionPenalty = -matrix.ggB;
+  const dominanceBonus = matrix.gbB - matrix.bbB;
+  const riskFactor = dominanceBonus / (dominanceBonus + collisionPenalty + 0.0001); // избегаем деления на 0
+
+  // Нормализация доверия
+  const trustFactor = B_belief / 100;
+
+  // Итоговая вероятность "Газ"
+  const gasProbability = trustFactor * 0.7 + riskFactor * 0.3;
+
+  const randomValue = Math.random();
+  return (randomValue < gasProbability) ? 'газ' : 'тормоз';
+}
+
+// Заполняем значениями матрицу выигрыша
 function fillPayoffMatrix() {
   const options = [];
   for (let i = -50; i <= 50; i += 10) {
