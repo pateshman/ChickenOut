@@ -6,12 +6,34 @@ let timeLeft = 5;
 let playerAAction = null;
 let gamePaused = false;
 let B_belief = Math.floor(Math.random() * 41) + 30; // доверие от 30 до 70 в начале
+let botPersonality = 'riskSeeking'; // по умолчанию рискофоб
+let recentCrashes = 0;  // память о недавних авариях (на 5 последних раундов)
+const crashMemoryLength = 5;
+let actionHistory = []; // хранит последние ходы A
+const historyLimit = 20;
 
 
 let botSpeed = 0;
 let speed = 0;
 
 let intervalId = null;
+
+let personalityShift = 0;
+
+if (botPersonality === 'riskAverse') {
+  personalityShift = -0.4;
+} else if (botPersonality === 'riskSeeking') {
+  personalityShift = 0.4;
+} else {
+  personalityShift = 0;
+}
+
+// Добавим динамику по очкам
+if (pointsB < pointsA) {
+  personalityShift += 0.3; // немного больше риска, чтобы пытаться наверстать
+} else if (pointsB > pointsA) {
+  personalityShift -= 0.2; // меньше риска, чтобы сохранить преимущество
+}
 
 // Запуск игры
 function startGame() {
@@ -106,11 +128,11 @@ function finishDecisionPhase() {
   const playerBAction = calculateBotAction();
   botSpeed = (playerBAction === 'газ') ? 5 : 0;
 
-  if (playerBAction === 'газ') {
-    botSpeed += 5;
-  } else {
-    botSpeed = 0;
-  }
+  // if (playerBAction === 'газ') {
+  //   botSpeed += 5;
+  // } else {
+  //   botSpeed = 0;
+  // }
 
   if (botSpeed > 0 || speed > 0) {
     if (!intervalId) {
@@ -147,16 +169,16 @@ function finishDecisionPhase() {
 
   // Корректировка доверия после каждого раунда
   if (playerAAction === 'тормоз' && playerBAction === 'тормоз') {
-    B_belief += 3;
+    B_belief += 10;
   }
   if (playerAAction === 'тормоз' && playerBAction === 'газ') {
-    B_belief += 5;
+    B_belief += 15;
   }
   if (playerAAction === 'газ' && playerBAction === 'тормоз') {
-    B_belief -= 5;
+    B_belief -= 15;
   }
   if (playerAAction === 'газ' && playerBAction === 'газ') {
-    B_belief -= 15;
+    B_belief -= 25;
   }
 
   // Ограничиваем доверие в пределах 0–100
@@ -187,7 +209,21 @@ function finishDecisionPhase() {
 
   updateScores();
   addToHistory(round, playerAAction, playerBAction, pointsA, pointsB, comment);
+  updateCrashMemory(comment);
 
+  function updateCrashMemory(result) {
+    if (result === 'Столкновение') {
+      recentCrashes++;
+    } else {
+      recentCrashes = Math.max(0, recentCrashes - 1);
+    }
+  
+    // ограничим память (чтобы не раздувалась бесконечно)
+    if (recentCrashes > crashMemoryLength) {
+      recentCrashes = crashMemoryLength;
+    }
+  }
+  
   round++;
     
   // Ждём 3 секунды, чтобы анимация продолжалась
@@ -201,16 +237,38 @@ function finishDecisionPhase() {
   }, 3000);
 }
 
-// Перепишем chooseAction — теперь просто вызываем finishDecisionPhase
+function updateBelief() {
+  const gasCount = actionHistory.filter(action => action === 'газ').length;
+  const gasFrequency = gasCount / actionHistory.length;
+
+  const targetBelief = (1 - gasFrequency) * 100;
+  B_belief = B_belief * 0.8 + targetBelief * 0.2;
+  B_belief = Math.max(0, Math.min(100, B_belief));
+}
+
 function chooseAction(action) {
   if (playerAAction === null) {
     playerAAction = action;
     clearInterval(timer);
     finishDecisionPhase();
   }
+
+  if (playerAAction === null) {
+    playerAAction = action;
+  
+    actionHistory.push(action);
+    if (actionHistory.length > historyLimit) {
+      actionHistory.shift();
+    }
+  
+    updateBelief();
+  
+    clearInterval(timer);
+    finishDecisionPhase();
+  }  
+
 }
 
-// Перепишем endRound так же — вызываем finishDecisionPhase
 function endRound() {
   clearInterval(timer);
   finishDecisionPhase();
@@ -285,7 +343,6 @@ function moveCar() {
     intervalId = null;
   }
   
-
   // Движение игрока
   if (speed > 0 && playerPos + speed < botPos - carWidth) {
     playerPos += speed;
@@ -305,8 +362,16 @@ function moveCar() {
   }
 }
 
+// ГИБРИДНАЯ ЛОГИКА БОТА:
+function calculateNashEquilibrium(matrix) {
+  const numeratorB = matrix.bbA - matrix.bgA;
+  const denominatorB = matrix.ggA - matrix.gbA - matrix.bgA + matrix.bbA;
+  let q = (denominatorB === 0) ? (numeratorB >= 0 ? 1 : 0) : numeratorB / denominatorB;
+  q = Math.min(1, Math.max(0, q));
+  return q;
+}
+
 function calculateBotAction() {
-  // Получаем значения из матрицы выигрыша
   const matrix = {
     ggA: parseInt(document.getElementById('ggA').value, 10),
     ggB: parseInt(document.getElementById('ggB').value, 10),
@@ -318,19 +383,53 @@ function calculateBotAction() {
     bbB: parseInt(document.getElementById('bbB').value, 10),
   };
 
-  // Анализ рисков
-  const collisionPenalty = -matrix.ggB;
-  const dominanceBonus = matrix.gbB - matrix.bbB;
-  const riskFactor = dominanceBonus / (dominanceBonus + collisionPenalty + 0.0001); // избегаем деления на 0
+  const nashProb = calculateNashEquilibrium(matrix);
 
-  // Нормализация доверия
-  const trustFactor = B_belief / 100;
+  // Переводим личность в коэффициент смещения
+  let personalityShift = 0;
+  if (botPersonality === 'riskAverse') {
+    personalityShift = -0.4;
+  } else if (botPersonality === 'riskSeeking') {
+    personalityShift = +0.4;
+  } else {
+    personalityShift = 0;
+  }
 
-  // Итоговая вероятность "Газ"
-  const gasProbability = trustFactor * 0.7 + riskFactor * 0.3;
+  // Динамический сдвиг по очкам
+  if (pointsB < pointsA) personalityShift += 0.3;
+  else if (pointsB > pointsA) personalityShift -= 0.2;
 
-  const randomValue = Math.random();
-  return (randomValue < gasProbability) ? 'газ' : 'тормоз';
+  // Фактор доверия (нормируем в [-1; +1])
+  const trustShift = (B_belief - 50) / 50;
+
+  // Фактор памяти аварий (каждая авария снижает риск на 0.3)
+  const crashShift = -0.3 * recentCrashes;
+
+  // Частота газа игрока (от 0 до 1)
+  const gasFrequency = actionHistory.length > 0
+    ? actionHistory.filter(a => a === 'газ').length / actionHistory.length
+    : 0.5;
+
+  let playerAggressivenessShift = 0
+  if (botPersonality === 'riskAverse') {
+    // Чем чаще игрок газует, тем более осторожным будет бот
+    playerAggressivenessShift = -0.1 * gasFrequency;
+  } else if (botPersonality === 'riskSeeking') {
+    // Чем чаще игрок газует, тем более злее будет бот
+    playerAggressivenessShift = 0.3 * gasFrequency;
+  }
+
+  // Итоговая сумма факторов
+  const rawDesire = (nashProb * 2 - 1) + trustShift + personalityShift + crashShift + playerAggressivenessShift;
+
+  // Сигмоида — мягкое вероятностное решение
+  const finalProb = sigmoid(rawDesire);
+
+  return (Math.random() < finalProb) ? 'газ' : 'тормоз';
+}
+
+function sigmoid(x) {
+  return 1 / (1 + Math.exp(-x));
 }
 
 // Заполняем значениями матрицу выигрыша
@@ -378,35 +477,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  document.getElementById('botPersonality').addEventListener('change', function() {
+    botPersonality = this.value;
+  });  
+
   document.getElementById('gas').addEventListener('click', function() {
     chooseAction('газ');
     speed += 5;
-    // if (!intervalId) {
-    //   intervalId = setInterval(moveCar, 100);
-    // }
   });
 
   document.getElementById('brake').addEventListener('click', function() {
     chooseAction('тормоз');
     speed = 0;
-  
-    // Останавливаем движение машины
-    // if (intervalId) {
-    //   clearInterval(intervalId);
-    //   intervalId = null;
-    // }
   });
   
-
-  // document.getElementById('resetButton').addEventListener('click', function() {
-  //   clearInterval(intervalId);
-  //   intervalId = null;
-  //   speed = 0;
-  //   // const playerCar = document.getElementById('playerCar');
-  //   // if (playerCar) playerCar.style.left = '50px';
-  //   resetGame();
-  // });
-
   const showMatrixButton = document.getElementById('showMatrixButton');
       const payoffMatrix = document.getElementById('payoffMatrix');
       
