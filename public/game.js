@@ -183,27 +183,41 @@ function finishDecisionPhase() {
   B_belief = Math.max(0, Math.min(100, B_belief));
 
   // Отправляем результат раунда на сервер
+  // Получаем значения матрицы из интерфейса
+  const matrix = {
+    AA: parseInt(document.getElementById('ggA').value, 10),
+    AB: parseInt(document.getElementById('gbA').value, 10),
+    BA: parseInt(document.getElementById('bgA').value, 10),
+    BB: parseInt(document.getElementById('bbA').value, 10)
+  };
+
+  // Отправляем на сервер все нужные данные
   fetch('http://localhost:3000/api/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-    playerA: 'PlayerA',
-    playerB: 'Bot',
-    trust: pointsA,
-    pointsA: pointsA,
-    pointsB: pointsB,
-    result: comment
+      playerA: 'PlayerA',
+      playerB: 'Bot',
+      strategyA: playerAAction,
+      strategyB: playerBAction,
+      trust: B_belief,
+      pointsA: pointsA,
+      pointsB: pointsB,
+      result: comment,
+      matrix: matrix,
+      botPersonality: botPersonality
     })
   })
   .then(res => res.json())
   .then(data => {
-  if (!data.success) {
-    console.error('Ошибка при сохранении результата:', data.error);
-  }
+    if (!data.success) {
+      console.error('Ошибка при сохранении результата:', data.error);
+    }
   })
   .catch(err => {
     console.error('Ошибка сети при сохранении результата:', err);
   });
+
 
   updateScores();
   addToHistory(round, playerAAction, playerBAction, pointsA, pointsB, comment);
@@ -245,26 +259,21 @@ function updateBelief() {
 }
 
 function chooseAction(action) {
-  if (playerAAction === null) {
-    playerAAction = action;
-    clearInterval(timer);
-    finishDecisionPhase();
+  if (playerAAction !== null) return;
+
+  playerAAction = action;
+
+  // Добавляем выбор в историю
+  actionHistory.push(action);
+  if (actionHistory.length > historyLimit) {
+    actionHistory.shift();
   }
 
-  if (playerAAction === null) {
-    playerAAction = action;
-  
-    actionHistory.push(action);
-    if (actionHistory.length > historyLimit) {
-      actionHistory.shift();
-    }
-  
-    updateBelief();
-  
-    clearInterval(timer);
-    finishDecisionPhase();
-  }  
+  // Обновляем доверие
+  updateBelief();
 
+  clearInterval(timer);
+  finishDecisionPhase();
 }
 
 function endRound() {
@@ -327,7 +336,6 @@ function moveCar() {
   const distance = botPos - playerPos - carWidth;
 
   if (distance <= 0) {
-    // Разрешаем машинкам "въехать" друг в друга
     playerPos += speed;
     botPos -= botSpeed;
     playerCar.style.left = playerPos + 'px';
