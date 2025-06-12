@@ -26,12 +26,12 @@
 
     <p>В игре два участника мчатся навстречу друг другу. У каждого есть два варианта:</p>
     <ul style="text-align: left;">
-      <li><strong>Газ (Прямо)</strong> — ехать вперёд, не уступая;</li>
-      <li><strong>Тормоз (Свернуть)</strong> — уклониться, избежав столкновения.</li>
+      <li><strong>Газ</strong> — ехать вперёд, не уступая</li>
+      <li><strong>Тормоз</strong> — затормозить, избежав столкновения</li>
     </ul>
 
     <hr>
-    
+
     <p>Разные наборы очков в матрице выигрышей могут кардинально изменить поведение игроков. Ниже приведены основные типы ситуаций:</p>
     <h3><strong>Классическая игра Chicken Out</strong></h3>
 
@@ -40,18 +40,18 @@
         <thead class="table-light">
           <tr>
             <th style="width: 25%;"></th>
-            <th style="width: 37.5%;">Прямо</th>
-            <th style="width: 37.5%;">Свернуть</th>
+            <th style="width: 37.5%;">Газ</th>
+            <th style="width: 37.5%;">Тормоз</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">Прямо</th>
+            <th scope="row">Газ</th>
             <td><strong>-20 ; -20</strong><br><small>оба проигрывают</small></td>
             <td><strong>40 ; -10</strong><br><small>первый выигрывает</small></td>
           </tr>
           <tr>
-            <th scope="row">Свернуть</th>
+            <th scope="row">Тормоз</th>
             <td><strong>-10 ; 40</strong><br><small>второй выигрывает</small></td>
             <td><strong>20 ; 20</strong><br><small>оба в безопасности</small></td>
           </tr>
@@ -60,26 +60,26 @@
       
     <h5 style="margin-top: 20px;">Ключевые особенности</h5>
     <ul style="text-align: left;">
-    <li>Награда выше за доминирование (поехать прямо, когда другой уступает);</li>
-    <li>Если оба выберут «Прямо», произойдёт <strong>катастрофа</strong> для обоих;</li>
-    <li>Если оба выберут «Свернуть», никто не выигрывает явно, но все в безопасности.</li>
+    <li>Награда выше за доминирование (нажать Газ, когда другой уступает)</li>
+    <li>Если оба выберут Газ, произойдёт <strong>катастрофа</strong> для обоих</li>
+    <li>Если оба выберут Тормоз, никто не выигрывает явно, но все в безопасности</li>
     </ul>
 
     <h5>Равновесия Нэша</h5>
     <p>В игре «Chicken Out» есть <strong>два чистых равновесия Нэша</strong>:</p>
     <ul style="text-align: left;">
-    <li>Игрок A выбирает <strong>Прямо</strong>, а игрок B — <strong>Свернуть</strong> (40; -10);</li>
-    <li>Игрок A выбирает <strong>Свернуть</strong>, а игрок B — <strong>Прямо</strong> (-10; 40).</li>
+    <li>Игрок A выбирает <strong>Газ</strong>, а игрок B — <strong>Тормоз</strong> (40; -10)</li>
+    <li>Игрок A выбирает <strong>Тормоз</strong>, а игрок B — <strong>Газ</strong> (-10; 40)</li>
     </ul>
     <p>В каждом из них один игрок уступает, а другой получает максимум. Менять стратегию невыгодно в одностороннем порядке.</p>
 
     <div class="alert alert-light text-start">
     Пусть:<br>
-    • Игрок A выбирает "Газ" с вероятностью <strong>p</strong><br>
-    • Игрок B выбирает "Газ" с вероятностью <strong>q</strong><br><br>
+    • Игрок A выбирает «Газ» с вероятностью <strong>p</strong><br>
+    • Игрок B выбирает «Газ» с вероятностью <strong>q</strong><br><br>
     В смешанном равновесии:<br>
     <strong>p = 0.6</strong>, <strong>q = 0.6</strong><br>
-    То есть, каждый выбирает "Газ" с вероятностью 60%, "Тормоз" — с 40%.
+    То есть, каждый выбирает «Газ» с вероятностью 60%, "Тормоз" — с 40%.
     </div>
 
     <p>Это отражает напряжённость ситуации: все стремятся выглядеть сильными, рискуя взаимным поражением.</p>
@@ -92,18 +92,18 @@
         <thead class="table-light">
           <tr>
             <th style="width: 25%;"></th>
-            <th style="width: 37.5%;">Прямо</th>
-            <th style="width: 37.5%;">Свернуть</th>
+            <th style="width: 37.5%;">Газ</th>
+            <th style="width: 37.5%;">Тормоз</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">Прямо</th>
+            <th scope="row">Газ</th>
             <td><strong>-100 ; -100</strong><br><small>оба проигрывают</small></td>
             <td><strong>40 ; -10</strong><br><small>первый выигрывает</small></td>
           </tr>
           <tr>
-            <th scope="row">Свернуть</th>
+            <th scope="row">Тормоз</th>
             <td><strong>-10 ; 40</strong><br><small>второй выигрывает</small></td>
             <td><strong>20 ; 20</strong><br><small>оба в безопасности</small></td>
           </tr>
@@ -112,16 +112,16 @@
 
     <h5 style="margin-top: 20px;">Ключевые особенности</h5>
     <ul style="text-align: left;">
-    <li>Столкновение стало катастрофическим (-100);</li>
-    <li>Игроки стали <strong>гораздо осторожнее</strong>;</li>
-    <li>Уступка — более безопасный выбор.</li>
+    <li>Столкновение стало катастрофическим (-100)</li>
+    <li>Игроки стали <strong>гораздо осторожнее</strong></li>
+    <li>Уступка — более безопасный выбор</li>
     </ul>
 
     <h5>Равновесия Нэша</h5>
     <p>Чистые равновесия Нэша сохраняются:</p>
     <ul style="text-align: left;">
-    <li>A — «Прямо», B — «Свернуть» (40; -10);</li>
-    <li>A — «Свернуть», B — «Прямо» (-10; 40).</li>
+    <li>A — «Газ», B — «Тормоз» (40; -10)</li>
+    <li>A — «Тормоз», B — «Газ» (-10; 40)</li>
     </ul>
 
     <div class="alert alert-light text-start">
@@ -140,18 +140,18 @@
         <thead class="table-light">
           <tr>
             <th style="width: 25%;"></th>
-            <th style="width: 37.5%;">Прямо</th>
-            <th style="width: 37.5%;">Свернуть</th>
+            <th style="width: 37.5%;">Газ</th>
+            <th style="width: 37.5%;">Тормоз</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">Прямо</th>
+            <th scope="row">Газ</th>
             <td><strong>-20 ; -20</strong><br><small>оба проигрывают</small></td>
             <td><strong>10 ; -5</strong><br><small>первый выигрывает</small></td>
           </tr>
           <tr>
-            <th scope="row">Свернуть</th>
+            <th scope="row">Тормоз</th>
             <td><strong>-5 ; 10</strong><br><small>второй выигрывает</small></td>
             <td><strong>5 ; 5</strong><br><small>оба в безопасности</small></td>
           </tr>
@@ -160,16 +160,16 @@
 
     <h5 style="margin-top: 20px;">Ключевые особенности</h5>
     <ul style="text-align: left;">
-    <li>Разница между стратегиями минимальна;</li>
-    <li>«Газ» почти не выгоден;</li>
-    <li>Игроки предпочитают <strong>безопасность</strong>.</li>
+    <li>Разница между стратегиями минимальна</li>
+    <li>«Газ» почти не выгоден</li>
+    <li>Игроки предпочитают <strong>безопасность</strong></li>
     </ul>
 
     <h5>Равновесия Нэша</h5>
     <p>Чистые равновесия Нэша:</p>
     <ul style="text-align: left;">
-    <li>Чистые равновесия: A — «Прямо», B — «Свернуть» (10; -5);</li>
-    <li>A — «Свернуть», B — «Прямо» (-5; 10);</li>
+    <li>Чистые равновесия: A — «Газ», B — «Тормоз» (10; -5)</li>
+    <li>A — «Тормоз», B — «Газ» (-5; 10)</li>
     </ul>
 
     <div class="alert alert-light text-start">
@@ -188,18 +188,18 @@
         <thead class="table-light">
           <tr>
             <th style="width: 25%;"></th>
-            <th style="width: 37.5%;">Прямо</th>
-            <th style="width: 37.5%;">Свернуть</th>
+            <th style="width: 37.5%;">Газ</th>
+            <th style="width: 37.5%;">Тормоз</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">Прямо</th>
+            <th scope="row">Газ</th>
             <td><strong>-20 ; -40</strong><br><small>оба проигрывают</small></td>
             <td><strong>40 ; -5</strong><br><small>первый выигрывает</small></td>
           </tr>
           <tr>
-            <th scope="row">Свернуть</th>
+            <th scope="row">Тормоз</th>
             <td><strong>-10 ; 30</strong><br><small>второй выигрывает</small></td>
             <td><strong>20 ; 10</strong><br><small>оба в безопасности</small></td>
           </tr>
@@ -208,15 +208,15 @@
 
     <h5 style="margin-top: 20px;">Ключевые особенности</h5>
     <ul style="text-align: left;">
-    <li>Игрок A получает <strong>меньше наказания</strong> и больше бонусов;</li>
-    <li>Игрок B — более уязвим;</li>
-    <li>Игра имитирует <strong>неравные позиции</strong>.</li>
+    <li>Игрок A получает <strong>меньше наказания</strong> и больше бонусов</li>
+    <li>Игрок B — более уязвим</li>
+    <li>Игра имитирует <strong>неравные позиции</strong></li>
     </ul>
 
     <h5>Равновесия Нэша</h5>
     <ul style="text-align: left;">
-    <li>Чистые равновесия смещены в пользу A;</li>
-    <li>Один из сценариев — A «Газ», B «Свернуть» (40; -5).</li>
+    <li>Чистые равновесия смещены в пользу A</li>
+    <li>Один из сценариев — A «Газ», B «Тормоз» (40; -5)</li>
     </ul>
 
     <div class="alert alert-light text-start">
@@ -236,18 +236,18 @@
         <thead class="table-light">
           <tr>
             <th style="width: 25%;"></th>
-            <th style="width: 37.5%;">Прямо</th>
-            <th style="width: 37.5%;">Свернуть</th>
+            <th style="width: 37.5%;">Газ</th>
+            <th style="width: 37.5%;">Тормоз</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">Прямо</th>
+            <th scope="row">Газ</th>
             <td><strong>-5 ; -5</strong><br><small>оба проигрывают</small></td>
             <td><strong>40 ; -10</strong><br><small>первый выигрывает</small></td>
           </tr>
           <tr>
-            <th scope="row">Свернуть</th>
+            <th scope="row">Тормоз</th>
             <td><strong>-10 ; 40</strong><br><small>второй выигрывает</small></td>
             <td><strong>20 ; 20</strong><br><small>оба в безопасности</small></td>
           </tr>
@@ -255,16 +255,16 @@
       </table>
     <h5 style="margin-top: 20px;">Ключевые особенности</h5>
     <ul style="text-align: left;">
-    <li>Столкновение не страшное (всего -5);</li>
-    <li>Игроки чаще рискуют;</li>
-    <li>Ситуация — более агрессивная.</li>
+    <li>Столкновение не страшное (всего -5)</li>
+    <li>Игроки чаще рискуют</li>
+    <li>Ситуация — более агрессивная</li>
     </ul>
 
     <h5>Равновесия Нэша</h5>
     <p>Чистые равновесия Нэша:</p>
     <ul style="text-align: left;">
-    <li>Чистые равновесия: A — «Прямо», B — «Свернуть» (40; -10);</li>
-    <li>A — «Свернуть», B — «Прямо» (-10; 40);</li>
+    <li>Чистые равновесия: A — «Газ», B — «Тормоз» (40; -10)</li>
+    <li>A — «Тормоз», B — «Газ» (-10; 40)</li>
     </ul>
 
     <div class="alert alert-light text-start">
