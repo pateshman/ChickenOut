@@ -123,13 +123,7 @@ function finishDecisionPhase() {
 
   // Выбор бота
   const playerBAction = calculateBotAction();
-  botSpeed = (playerBAction === 'газ') ? 5 : 0;
-
-  if (playerBAction === 'газ') {
-    botSpeed += 5;
-  } else {
-    botSpeed = 0;
-  }
+  botSpeed = (playerBAction === 'газ') ? 10 : 0;
 
   if (botSpeed > 0 || speed > 0) {
     if (!intervalId) {
