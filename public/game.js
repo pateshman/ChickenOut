@@ -122,7 +122,6 @@ function finishDecisionPhase() {
   }
 
   // Выбор бота
-  // const playerBAction = Math.random() < 0.5 ? 'газ' : 'тормоз';
   const playerBAction = calculateBotAction();
   botSpeed = (playerBAction === 'газ') ? 5 : 0;
 
@@ -389,49 +388,46 @@ function calculateBotAction() {
     bbB: parseInt(document.getElementById('bbB').value, 10),
   };
 
+  // Расчёт равновесия Нэша
   const nashProb = calculateNashEquilibrium(matrix);
 
-  // Переводим личность в коэффициент смещения
-  let personalityShift = 0;
-  if (botPersonality === 'riskAverse') {
-    personalityShift = -0.4;
-  } else if (botPersonality === 'riskSeeking') {
-    personalityShift = +0.4;
-  } else {
-    personalityShift = 0;
-  }
+  // Добавляем фиксированный сдвиг в сторону агрессии или осторожности
+  let personalitySign = 0;
+  if (botPersonality === 'riskAverse') personalitySign = -1;
+  else if (botPersonality === 'riskSeeking') personalitySign = 1;
 
   // Динамический сдвиг по очкам
+  // Если бот проигрывает, он начинает догонять за счёт большего риска
   if (pointsB < pointsA) personalityShift += 0.3;
   else if (pointsB > pointsA) personalityShift -= 0.2;
 
-  // Фактор доверия (нормируем в [-1; +1])
+  // Фактор доверия
+  // Чем ниже доверие — тем осторожнее бот
   const trustShift = (B_belief - 50) / 50;
 
-  // Фактор памяти аварий (каждая авария снижает риск на 0.3)
-  const crashShift = -0.3 * recentCrashes;
+  // Частота газа игрока
+  const recentGasFrequency = calculateRecentGasFrequency(actionHistory, 5);
 
-  // Частота газа игрока (от 0 до 1)
-  const gasFrequency = actionHistory.length > 0
-    ? actionHistory.filter(a => a === 'газ').length / actionHistory.length
-    : 0.5;
-
-  let playerAggressivenessShift = 0
-  if (botPersonality === 'riskAverse') {
-    // Чем чаще игрок газует, тем более осторожным будет бот
-    playerAggressivenessShift = -0.2 * gasFrequency;
-  } else if (botPersonality === 'riskSeeking') {
-    // Чем чаще игрок газует, тем более злее будет бот
-    playerAggressivenessShift = 1.2 * gasFrequency;
-  }
-
-  // Итоговая сумма факторов
-  const rawDesire = (nashProb * 2 - 1) + trustShift + personalityShift + crashShift + playerAggressivenessShift;
-
-  // Сигмоида — мягкое вероятностное решение
+  // Итоговая сумма факторов 
+  const rawDesire = 
+      1.0 * (nashProb * 2 - 1)
+    + 0.8 * trustShift
+    + 0.7 * personalitySign
+    + (-0.3) * recentCrashes
+    + (botPersonality === 'riskAverse'
+         ? -0.5 * recentGasFrequency // Чем чаще игрок газует, тем более осторожным будет бот
+         : 1.5 * recentGasFrequency); // Чем чаще игрок газует, тем более злее будет бот
+     
+  // Сигмоида — мягкое вероятностное решение 
   const finalProb = sigmoid(rawDesire);
 
   return (Math.random() < finalProb) ? 'газ' : 'тормоз';
+}
+
+function calculateRecentGasFrequency(history, windowSize = 5) {
+  const recent = history.slice(-windowSize);
+  const gasCount = recent.filter(action => action === 'газ').length;
+  return recent.length > 0 ? gasCount / recent.length : 0.5;
 }
 
 function sigmoid(x) {
