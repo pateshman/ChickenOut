@@ -4,7 +4,6 @@ async function loadData() {
   
     renderStrategyChart(data.strategyDistribution);
     renderGameTypeChart(data.gameTypes);
-    // renderTrustPointsChart(data.trustAndPoints);
   }
   
   function renderStrategyChart(distribution) {

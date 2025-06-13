@@ -7,7 +7,6 @@ const classifyGameType = require('./classifyGame');
 const app = express();
 const PORT = 3000;
 
-// Создаём БД (если не существует)
 const db = new sqlite3.Database('./data/game.db');
 
 // Создаём таблицу rounds
@@ -53,8 +52,6 @@ app.post('/api/save', (req, res) => {
     }
   );
 });
-
-
 
 // Основная API статистика (основная статистика для игры)
 app.get('/api/stats', (req, res) => {
