@@ -226,4 +226,4 @@ app.get('/api/stats-by-bot', (req, res) => {
 
 
 // Запуск сервера
-app.listen(PORT, () => console.log(`Сервер запущен: http://localhost:${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Сервер запущен: http://95.163.221.29:${PORT}`));

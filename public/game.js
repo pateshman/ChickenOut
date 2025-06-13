@@ -185,7 +185,7 @@ function finishDecisionPhase() {
   };
 
   // Отправляем на сервер все нужные данные
-  fetch('http://localhost:3000/api/save', {
+  fetch('http://95.163.221.29:3000/api/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
