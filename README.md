@@ -79,4 +79,9 @@ Chicken Out — браузерная обучающая игра, моделир
 
 ![Схема игры](photo.jpeg)
 
+---
+
+## Запуск
+
+<pre> <code>'''node server.j'''</code> </pre>
 
