@@ -7,7 +7,7 @@ const classifyGameType = require('./classifyGame');
 const app = express();
 const PORT = 3000;
 
-const db = new sqlite3.Database('./data/game.db');
+const db = new sqlite3.Database(path.join(__dirname, 'data', 'game.db'));
 
 // Создаём таблицу rounds
 db.run(`
@@ -29,7 +29,7 @@ db.run(`
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Сохраняем результат игры
 app.post('/api/save', (req, res) => {
@@ -223,4 +223,4 @@ app.get('/api/stats-by-bot', (req, res) => {
 
 
 // Запуск сервера
-app.listen(PORT, '0.0.0.0', () => console.log(`Сервер запущен: http://95.163.221.29:${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Сервер запущен: http://localhost:${PORT}`));
